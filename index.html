@@ -215,9 +215,36 @@ function drawFeatures(){
 function setActiveDay(d){
   activeDay=(d===null||String(activeDay)===String(d))?null:d;
   drawFeatures();updateLegendActive();
-  if(activeDay!==null){const pts=points.filter(x=>String(x.day)===String(activeDay)).map(x=>LL(x));
-    if(pts.length)map.fitBounds(pts,{padding:[60,60],maxZoom:11});}
-  else fitAll();
+  if(activeDay!==null){
+    const pts=points.filter(x=>String(x.day)===String(activeDay)).map(x=>LL(x));
+    if(pts.length)map.fitBounds(pts,{padding:[60,60],maxZoom:11});
+    showDay(activeDay);
+  } else { fitAll(); panelHint(); }
+}
+function detTable(pl){
+  return `<table class="det">
+    <tr><td class="k">路段</td><td>${pl.route}</td></tr>
+    <tr><td class="k">参考里程</td><td>${pl.km}</td></tr>
+    <tr><td class="k">海拔</td><td>${pl.elev}</td></tr>
+    <tr><td class="k">核心看点</td><td>${pl.sights}</td></tr>
+    <tr><td class="k">住宿</td><td>${pl.stay}</td></tr>
+    ${pl.extra?`<tr><td class="k">备注</td><td style="color:#b35900">${pl.extra}</td></tr>`:""}
+  </table>`;
+}
+function showDay(d){
+  const pl=dayPlans[d];const col=dayColors[d];
+  const sameDay=points.filter(x=>String(x.day)===String(d));
+  const chips=sameDay.map(x=>`<span class="chip" style="background:${col}" onclick="window.__sel('${x.n.replace(/'/g,"")}')">${x.n}</span>`).join("");
+  let html=`<span class="badge" style="background:${col}">${dayNames[d]}</span>`;
+  html+=`<div class="ptitle">${dayNames[d]}</div>`;
+  html+=`<div class="psub">点下方地点名可在地图定位</div>`;
+  html+=`<div class="secttl">本日完整安排</div>`+detTable(pl);
+  html+=`<div class="stops"><b>本日相关点：</b><br>${chips}</div>`;
+  document.getElementById('pbody').innerHTML=html;
+  if(window.matchMedia('(max-width:820px)').matches){openPanel();document.getElementById('pbody').scrollTop=0;}
+}
+function panelHint(){
+  document.getElementById('pbody').innerHTML=`<p class="hint">👈 点地图节点，或点图例里的某一天，这里就显示当天完整行程。<br><br>🚩=穿越线起点，🏁=终点，●圆点=过夜地，◆方块=途经/观景点。</p>`;
 }
 map.on('baselayerchange',e=>{mode=gcjLayers.has(e.layer)?'gcj':'wgs';drawFeatures();});
 
