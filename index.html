@@ -2,21 +2,21 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>川西北部越野大环 · 宝丹线进（点节点看行程）</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/leaflet/1.9.4/leaflet.css" />
+<script src="https://cdn.bootcdn.net/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <style>
   html,body{margin:0;height:100%;font-family:"Microsoft YaHei","PingFang SC",sans-serif;}
   #wrap{display:flex;height:100%;}
   #map{flex:1;height:100%;background:#e8e8e8;}
   #panel{width:340px;height:100%;overflow-y:auto;background:#fff;box-shadow:-2px 0 8px rgba(0,0,0,.12);-webkit-overflow-scrolling:touch;}
   .ph{position:relative;background:#1F4E79;color:#fff;padding:14px 16px;}
+  .ph h1{margin:0;font-size:15px;}
+  .ph p{margin:4px 0 0;font-size:11px;opacity:.85;line-height:1.5;}
   .closebtn{display:none;position:absolute;top:10px;right:12px;width:30px;height:30px;line-height:28px;text-align:center;font-size:22px;color:#fff;background:rgba(255,255,255,.18);border-radius:50%;cursor:pointer;}
   #panelToggle{display:none;position:absolute;bottom:18px;right:14px;z-index:1100;background:#1F4E79;color:#fff;border:none;border-radius:22px;padding:10px 16px;font-size:14px;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.35);}
   .grip{display:none;width:40px;height:4px;background:rgba(255,255,255,.5);border-radius:3px;margin:0 auto 8px;}
-  .ph h1{margin:0;font-size:15px;}
-  .ph p{margin:4px 0 0;font-size:11px;opacity:.85;line-height:1.5;}
   .pbody{padding:14px 16px;}
   .hint{color:#888;font-size:12px;line-height:1.7;}
   .badge{display:inline-block;color:#fff;font-size:11px;padding:2px 9px;border-radius:11px;margin-bottom:8px;}
@@ -56,7 +56,7 @@
       <div class="grip"></div>
       <span class="closebtn" onclick="closePanel()">×</span>
       <h1>川西北部越野大环 · 宝丹线进</h1>
-      <p>飞天府机场→龙泉驿取/还车 · 自驾四驱(AT胎) · 7天6晚<br>🚩起=穿越线起点 🏁终=终点 ●=住宿 ◆=途经。右上角切 Google/高德 与 地形/卫星。</p>
+      <p>飞天府机场→龙泉驿取/还车 · 自驾四驱(AT胎) · 7天6晚<br>🚩起=穿越线起点 🏁终=终点 ●=住宿 ◆=途经。右上角切 高德/Google 与 地形/卫星。</p>
     </div>
     <div class="pbody" id="pbody">
       <p class="hint">👈 点地图上任意<b>节点</b>，这里显示对应那天的完整行程（路段 / 里程 / 海拔 / 看点 / 住宿 / 备注）。<br><br>🚩=穿越线起点，🏁=终点，●圆点=过夜地，◆方块=途经/观景点。</p>
@@ -87,12 +87,12 @@ function gcj(lng,lat){if(outOfChina(lng,lat))return[lat,lng];
 
 const dayColors={1:"#888888",2:"#E15759",3:"#F28E2B",4:"#59A14F",5:"#4E79A7",6:"#B07AA1",7:"#9C755F"};
 const dayNames={1:"D1 取车→宝兴",2:"D2 宝丹线→丹巴",3:"D3 金金线→金川",4:"D4 情人海·牛肝马肺海",
-  5:"D5 莫斯卡穿越→小金",6:"D6 四姑娘山→都江堰",7:"D7 还车·返程"};
+  5:"D5 毛丹线→小金",6:"D6 四姑娘山→都江堰",7:"D7 还车·返程"};
 
 const dayPlans={
   1:{route:"飞成都天府机场—龙泉驿一专停车场(取车)—成雅高速—宝兴县城(东拉山可顺游)",km:"取车后约 190 km(铺装)",
      elev:"宿宝兴县城约 1,000 m。",sights:"东拉山大峡谷",stay:"宝兴县城(吃住补给加油到位)",
-     extra:"优先飞天府机场(离龙泉驿近,约30km)。中午落地→取车→下午到宝兴。宝兴—中岗(两永线)在施工。"},
+     extra:"优先飞天府机场(离龙泉驿约30km)。中午落地→取车→下午到宝兴。宝兴—中岗(两永线)在施工。"},
   2:{route:"宝丹线：宝兴—中岗村—宝康线—两河口(左拐)—丹巴",km:"约 150–170 km(几乎全非铺装,翻两座 4000m+ 垭口,全天)",
      elev:"宿丹巴约 1,800 m。",sights:"宝康线「四川独库」深谷雪山",stay:"丹巴县城",
      extra:"宝兴城—五龙乡 7:00–20:00 放行、夜间禁行、雨天管制——7点放行就出发。两河口分叉:左丹巴/右小金。"},
@@ -101,17 +101,17 @@ const dayPlans={
   4:{route:"金川—阿科里乡情人海—毛日乡—牛肝马肺海",km:"约 120 km(土路往返,含徒步约半小时支线)",
      elev:"宿毛日乡约 3,000 m(顺势抬升,为高海拔适应)。情人海3,800m、牛肝马肺海4,300m。",
      sights:"情人海(撒尔脚措)、牛肝马肺海(法螺圣湖)",stay:"毛日乡"},
-  5:{route:"毛日—阿科里沟—莫斯卡(16海子)—金龙山—丹东乡—小金县城",km:"约 150 km(重度越野/泥路 + 到小金,全天)",
-     elev:"宿小金县城约 2,400 m(比丹东低、吃住更好,利于恢复)。莫斯卡约4,300m 只白天进、不过夜(爬高睡低)。",
-     sights:"莫斯卡、16海子、阿科里沟",stay:"小金县城",
-     extra:"⚠ 全环最险泥路日。A计划(路况OK):进泥前胎压放1.5–1.8bar、出泥充回;脱困板/拖车索/工兵铲备手边;设折返点(天黑或连陷两次即掉头)。B计划(深泥连片/雨中雨后/单车无接应):绕行 金川→丹巴→小金 约170km铺装,跳过莫斯卡。判断:晴干+不嫌慢→进;深泥+雨+单车→绕。"},
+  5:{route:"毛丹线：毛日乡—热它村—丹东镇—小金县城",km:"约 120–150 km(毛丹线穿越 + 到小金,全天)",
+     elev:"宿小金县城约 2,400 m(海拔较低、吃住好,利于恢复)。热它村—毛日间约 4,500 m 垭口。",
+     sights:"毛丹线穿越、热它村",stay:"小金县城",
+     extra:"⚠ 热它村—毛日段为牧道级烂路(导航常不给行车路线,需用实测GPX);雨季泥泞。热它村可休整/或吃饭。A计划:胎压放1.5–1.8bar、出泥充回,脱困板备手边,设折返点。B计划(深泥/雨中/单车):绕行 金川→丹巴→小金 约170km铺装。"},
   6:{route:"小金—四姑娘山(双桥沟、日隆,逛一逛不过夜)—巴朗山垭口—卧龙—都江堰",km:"约 250 km(巴朗山盘山慢,全天)",
      elev:"宿都江堰约 700 m(下到平原,为次日返程铺垫)。巴朗山垭口约4,480m。",
      sights:"双桥沟、巴朗山垭口、卧龙",stay:"都江堰(临近成都,D7轻松)",
      extra:"四姑娘山只逛不住,当天下到都江堰,把时间留给 D7。"},
   7:{route:"都江堰—成都第二绕城—龙泉驿一专停车场(还车)—天府机场—✈上海浦东",km:"约 90 km(都江堰→龙泉驿约70km + 到机场)",
      elev:"回平原。次日(D8)上班。",sights:"收尾",stay:"上海(当晚抵)",
-     extra:"先确认一专停车场傍晚能否收车。建议天府机场 21:00 后晚班机或留足缓冲;天府离龙泉驿近(~35km)。"},
+     extra:"先确认一专停车场傍晚能否收车。建议天府机场 21:00 后晚班机或留足缓冲;天府离龙泉驿约 35km。"},
 };
 
 // 概略坐标 WGS84 (lat,lng) —— 仅供示意，非导航精度
@@ -128,13 +128,11 @@ const points=[
   {n:"增达乡·新金小路(金金线终点)",lat:31.2500,lng:101.8500,day:3,alt:"~2500m",type:"end",d:"🏁金金线终点(金川)，乡口黄色路牌"},
   {n:"金川县城",lat:31.4800,lng:102.0700,day:3,alt:"~2100m",type:"stay",d:"D3宿"},
   {n:"阿科里·情人海",lat:31.6000,lng:101.7200,day:4,alt:"3800m",type:"view",d:"撒尔脚措/长海子"},
-  {n:"毛日乡",lat:31.4800,lng:101.5800,day:4,alt:"~3000m",type:"stay",d:"D4宿；牛肝马肺海前哨"},
+  {n:"毛日乡",lat:31.4800,lng:101.5800,day:4,alt:"~3000m",type:"stay",d:"D4宿；毛丹线起点；牛肝马肺海前哨"},
   {n:"牛肝马肺海",lat:31.4300,lng:101.5200,day:4,alt:"4300m",type:"view",d:"壳它村，徒步约半小时支线(往返)"},
-  {n:"阿科里沟(莫斯卡穿越起点)",lat:31.2500,lng:101.6200,day:5,alt:"—",type:"start",d:"🚩莫斯卡穿越段起点"},
-  {n:"莫斯卡(16海子)",lat:31.0000,lng:101.5800,day:5,alt:"~4300m",type:"view",d:"白天进、不过夜；雨季泥泞陷车高发"},
-  {n:"金龙山",lat:30.9500,lng:101.7000,day:5,alt:"~4000m",type:"view",d:"莫斯卡—丹东途中"},
-  {n:"丹东乡(莫斯卡穿越终点)",lat:30.9700,lng:102.2000,day:5,alt:"~2900m",type:"end",d:"🏁穿越终点(小金侧)，继续到小金县城"},
-  {n:"小金县城",lat:30.9980,lng:102.3630,day:5,alt:"~2400m",type:"stay",d:"D5宿(比丹东低、吃住好,利于恢复)"},
+  {n:"热它村",lat:31.1500,lng:101.9500,day:5,alt:"~3500m",type:"view",d:"毛丹线途经，休整点(或可吃饭)；热它—毛日间约4500m垭口"},
+  {n:"丹东镇(毛丹线终点)",lat:30.9700,lng:102.2000,day:5,alt:"~2900m",type:"end",d:"🏁毛丹线终点(小金侧)，继续到小金县城"},
+  {n:"小金县城",lat:30.9980,lng:102.3630,day:5,alt:"~2400m",type:"stay",d:"D5宿(海拔较低、吃住好,利于恢复)"},
   {n:"双桥沟",lat:31.1000,lng:102.8000,day:6,alt:"~3000m",type:"view",d:"四姑娘山景区，逛一逛"},
   {n:"四姑娘山镇(日隆)",lat:31.0000,lng:102.8600,day:6,alt:"~3200m",type:"view",d:"逛一逛不过夜"},
   {n:"巴朗山垭口",lat:30.8800,lng:102.9000,day:6,alt:"~4480m",type:"view",d:"观景，出山"},
@@ -144,25 +142,24 @@ const points=[
 points.forEach(p=>{const g=gcj(p.lng,p.lat);p.glat=g[0];p.glng=g[1];});
 const byName={};points.forEach(p=>byName[p.n]=p);
 
-// 主环顺序(首尾经龙泉驿取/还车回成都)
 const routeOrder=["成都(天府机场)","一专停车场(龙泉驿·取/还车)","宝兴县城","中岗村(宝丹线起点)","两河口村",
   "丹巴县城(宝丹线终点)","太平桥乡(金金线起点)","森都垭口","增达乡·新金小路(金金线终点)","金川县城",
-  "阿科里·情人海","毛日乡","阿科里沟(莫斯卡穿越起点)","莫斯卡(16海子)","金龙山","丹东乡(莫斯卡穿越终点)","小金县城",
+  "阿科里·情人海","毛日乡","热它村","丹东镇(毛丹线终点)","小金县城",
   "双桥沟","四姑娘山镇(日隆)","巴朗山垭口","卧龙","都江堰","一专停车场(龙泉驿·取/还车)","成都(天府机场)"];
 
-// ---------- 底图：Google(WGS84) + 高德(GCJ02) ----------
+// ---------- 底图：高德(GCJ02,默认) + Google(WGS84) ----------
 const map=L.map('map');
-const gTerrain=L.tileLayer('https://mt{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}&hl=zh-CN',{subdomains:"0123",maxZoom:20,attribution:'© Google 地形'}).addTo(map);
-const gSat=L.tileLayer('https://mt{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{subdomains:"0123",maxZoom:20,attribution:'© Google 卫星'});
-const gHybrid=L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}&hl=zh-CN',{subdomains:"0123",maxZoom:20,attribution:'© Google 混合'});
-const aVec=L.tileLayer('https://wprd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&style=7&x={x}&y={y}&z={z}',{subdomains:"1234",maxZoom:18,attribution:'© 高德地图'});
+const aVec=L.tileLayer('https://wprd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&style=7&x={x}&y={y}&z={z}',{subdomains:"1234",maxZoom:18,attribution:'© 高德地图'}).addTo(map);
 const aSat=L.layerGroup([
   L.tileLayer('https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}',{subdomains:"1234",maxZoom:18}),
   L.tileLayer('https://webst0{s}.is.autonavi.com/appmaptile?style=8&x={x}&y={y}&z={z}',{subdomains:"1234",maxZoom:18})
 ]);
-L.control.layers({"Google 地形":gTerrain,"Google 卫星":gSat,"Google 卫星+标注":gHybrid,"高德 地图":aVec,"高德 卫星":aSat}).addTo(map);
+const gTerrain=L.tileLayer('https://mt{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}&hl=zh-CN',{subdomains:"0123",maxZoom:20,attribution:'© Google 地形'});
+const gSat=L.tileLayer('https://mt{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{subdomains:"0123",maxZoom:20,attribution:'© Google 卫星'});
+const gHybrid=L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}&hl=zh-CN',{subdomains:"0123",maxZoom:20,attribution:'© Google 混合'});
+L.control.layers({"高德 地图":aVec,"高德 卫星":aSat,"Google 地形":gTerrain,"Google 卫星":gSat,"Google 卫星+标注":gHybrid}).addTo(map);
 const gcjLayers=new Set([aVec,aSat]);
-let mode='wgs';
+let mode='gcj';
 function LL(p){return mode==='gcj'?[p.glat,p.glng]:[p.lat,p.lng];}
 
 const featureLayer=L.layerGroup().addTo(map);
@@ -214,7 +211,7 @@ function showPanel(p){
   html+=`<div class="stops"><b>本日相关点：</b><br>${chips}</div>`;
   const g=`https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}`;
   const a=`https://uri.amap.com/marker?position=${p.glng},${p.glat}&name=${encodeURIComponent(p.n)}&coordinate=gaode`;
-  html+=`<div style="margin-top:12px;font-size:12px"><a href="${g}" target="_blank" style="color:#2E75B6;font-weight:600">→ Google地图</a> &nbsp;|&nbsp; <a href="${a}" target="_blank" style="color:#2E75B6;font-weight:600">→ 高德地图</a></div>`;
+  html+=`<div style="margin-top:12px;font-size:12px"><a href="${a}" target="_blank" style="color:#2E75B6;font-weight:600">→ 高德地图</a> &nbsp;|&nbsp; <a href="${g}" target="_blank" style="color:#2E75B6;font-weight:600">→ Google地图</a></div>`;
   document.getElementById('pbody').innerHTML=html;
   if(window.matchMedia('(max-width:820px)').matches){document.getElementById('panel').classList.add('open');document.getElementById('pbody').scrollTop=0;}
 }
@@ -225,7 +222,6 @@ window.__sel=(name)=>{const p=byName[name];if(p){map.setView(LL(p),Math.max(map.
 drawFeatures();
 function fitAll(){map.fitBounds(points.map(p=>[p.lat,p.lng]),{padding:[40,40]});}
 fitAll();
-// 屏幕旋转/尺寸变化时刷新地图并重新适配
 let _rt;window.addEventListener('resize',()=>{clearTimeout(_rt);_rt=setTimeout(()=>{map.invalidateSize();fitAll();},250);});
 window.addEventListener('orientationchange',()=>{setTimeout(()=>{map.invalidateSize();fitAll();},400);});
 
